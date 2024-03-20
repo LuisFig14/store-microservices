@@ -1,16 +1,15 @@
 package com.store.core.controller;
 
 import com.store.core.domain.Cliente;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @RestController
+@RequestMapping("/clientes")
 public class ClienteRestController {
 
     private List<Cliente> clientes = new ArrayList<>(Arrays.asList(
@@ -19,26 +18,48 @@ public class ClienteRestController {
             new Cliente("col", "1234", "Collins")
     ));
 
-    @GetMapping("/getClientes")
-    public List<Cliente> getClientes(){
-        return clientes;
+
+
+    @GetMapping
+    public ResponseEntity<?> getClientes(){ //Método para obtener todos los clientes con wildCard(comodín) en response entity
+        return ResponseEntity.ok(clientes); //return ok de clientes
     }
 
-    @GetMapping("/getCliente/{username}")
-    public Cliente getCliente(@PathVariable String username){
-        return clientes.stream().
+    @GetMapping("/{username}") //Método para obtener un cliente a base de su nombre de usuario
+    public ResponseEntity<?> getCliente(@PathVariable String username){
+        return ResponseEntity.ok(clientes.stream().
                 filter(cliente -> cliente.getUsername().equalsIgnoreCase(username))
-                .findFirst().orElseThrow();
+                .findFirst().orElseThrow());
     }
 
-    @PostMapping("/clientes")
-    public Cliente altaCliente(Cliente cliente){
+    @PostMapping
+    public Cliente altaCliente(@RequestBody Cliente cliente){
         clientes.add(cliente);
         return cliente;
     }
-    @GetMapping("/google")
-    public String getGoogle(String s){
-        return "www.google.com";
+    @PutMapping
+    public ResponseEntity<?> actualizaCliente(@RequestBody Cliente cliente){
+
+        Cliente clienteEncontrado = clientes.stream().
+                filter(cli -> cli.getUsername().equalsIgnoreCase(cliente.getUsername())).
+                findFirst().orElseThrow();
+
+        clienteEncontrado.setPassword(cliente.getPassword());
+        clienteEncontrado.setNombre(cliente.getNombre());
+
+        return ResponseEntity.ok(clienteEncontrado);
+    }
+    @DeleteMapping("/{userName}")
+    public ResponseEntity eliminaCliente(@PathVariable String userName){
+
+        Cliente clienteEliminado = clientes.stream().
+                filter(cli-> cli.getUsername().equalsIgnoreCase(userName)).
+                findFirst().orElseThrow();
+
+        clientes.remove(clienteEliminado);
+
+        return ResponseEntity.noContent().build();
+
     }
 
 
