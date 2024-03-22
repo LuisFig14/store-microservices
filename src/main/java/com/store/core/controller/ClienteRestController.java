@@ -3,7 +3,9 @@ package com.store.core.controller;
 import com.store.core.domain.Cliente;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,9 +35,16 @@ public class ClienteRestController {
     }
 
     @PostMapping
-    public Cliente altaCliente(@RequestBody Cliente cliente){
+    public ResponseEntity<?> altaCliente(@RequestBody Cliente cliente){
         clientes.add(cliente);
-        return cliente;
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{userName}")
+                .buildAndExpand(cliente.getUsername())
+                .toUri();
+
+        return ResponseEntity.created(location).body(cliente);
     }
     @PutMapping
     public ResponseEntity<?> actualizaCliente(@RequestBody Cliente cliente){
