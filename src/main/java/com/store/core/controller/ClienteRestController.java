@@ -29,9 +29,16 @@ public class ClienteRestController {
 
     @GetMapping("/{username}") //Método para obtener un cliente a base de su nombre de usuario
     public ResponseEntity<?> getCliente(@PathVariable String username){
-        return ResponseEntity.ok(clientes.stream().
-                filter(cliente -> cliente.getUsername().equalsIgnoreCase(username))
-                .findFirst().orElseThrow());
+
+        for (Cliente cliente: clientes){
+
+            if (cliente.getUsername().equalsIgnoreCase(username)){
+                return ResponseEntity.ok(cliente);
+            }
+
+
+        }
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping
