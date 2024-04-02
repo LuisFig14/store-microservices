@@ -1,6 +1,8 @@
 package com.store.core.controller;
 
 import com.store.core.domain.Cliente;
+import com.store.core.exceptions.BadRequestException;
+import com.store.core.exceptions.ResourceNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,15 +32,16 @@ public class ClienteRestController {
     @GetMapping("/{username}") //Método para obtener un cliente a base de su nombre de usuario
     public ResponseEntity<?> getCliente(@PathVariable String username){
 
-        for (Cliente cliente: clientes){
-
-            if (cliente.getUsername().equalsIgnoreCase(username)){
-                return ResponseEntity.ok(cliente);
-            }
-
-
+        if (username.length() != 3){
+            throw new BadRequestException("El parámetro nombre de usuario debe contener 3 caracteres ");
         }
-        return ResponseEntity.notFound().build();
+
+
+        return clientes.stream().
+                filter(cliente -> cliente.getUsername().equalsIgnoreCase(username))
+                .findFirst()
+                .map(ResponseEntity::ok)
+                .orElseThrow(()-> new ResourceNotFoundException("Cliente " + username + " no encontrado"));
     }
 
     @PostMapping
