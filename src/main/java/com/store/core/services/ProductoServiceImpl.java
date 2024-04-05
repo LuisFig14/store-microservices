@@ -1,11 +1,13 @@
 package com.store.core.services;
 
 import com.store.core.domain.Producto;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class ProductoServiceImpl implements ProductService{
 
     private List<Producto> productos = new ArrayList<>(Arrays.asList(
@@ -13,8 +15,10 @@ public class ProductoServiceImpl implements ProductService{
             new Producto(2, "Telefono", 100.0, 2))
     );
 
-    public List<Producto> getProductos (){
+    @Override
+    public List<Producto> getProductos() {
         return productos;
     }
+
 
 }

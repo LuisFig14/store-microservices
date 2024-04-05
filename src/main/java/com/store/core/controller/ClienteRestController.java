@@ -3,6 +3,7 @@ package com.store.core.controller;
 import com.store.core.domain.Cliente;
 import com.store.core.exceptions.BadRequestException;
 import com.store.core.exceptions.ResourceNotFoundException;
+import com.store.core.services.ClienteServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -15,6 +16,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/clientes")
 public class ClienteRestController {
+
+    private ClienteServiceImpl clienteService = new ClienteServiceImpl();
 
     private List<Cliente> clientes = new ArrayList<>(Arrays.asList(
             new Cliente("arm", "1234", "Armstrong"),
@@ -79,6 +82,12 @@ public class ClienteRestController {
 
         return ResponseEntity.noContent().build();
 
+    }
+
+    @GetMapping("/clienteByService")
+    public ResponseEntity<?> getClienteByServiceImpl(){
+        List<Cliente> clientes1 = clienteService.getClientes();
+        return ResponseEntity.ok(clientes1);
     }
 
 
