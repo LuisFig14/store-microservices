@@ -10,8 +10,8 @@ import java.util.List;
 public class ClienteServiceImpl implements ClienteService {
 
     private List<Cliente> clienteList = new ArrayList<>(Arrays.asList(
-       new Cliente("luisito", "1234", "Luis"),
-       new Cliente("Lupita", "246", "Guadalupe")
+       new Cliente("louis", "1234", "Luis"),
+       new Cliente("Johan", "246", "Mark")
     ));
 
     @Override
